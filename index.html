@@ -1,0 +1,104 @@
+<html>
+
+<head>
+    <title>Fake Checker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body id="page">
+
+    <div class="comment-section">
+        <h3 class="spaced">What is your favorite color?</h3>
+        <div id="comments-container">
+
+        </div>
+
+        <form class="spaced">
+            <p></p>
+            <div class="improve-label">Post an answer</div>
+            <textarea placeholder="Your answer..." id="commentBox" class="comment-box" rows=4></textarea><br>
+
+            <div class="improve-label">Your Name</div>
+            <input class="comment-box" type="text" name="textinput-username" id="commentBox-author" value="guest"><br>
+            <a onclick="submitComment()" class="button"><i class="icon20" data-feather="send"></i>Post</a>
+        </form>
+
+
+    </div>
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-database.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+          apiKey: "AIzaSyB4XlYczGiKo6IUIzYaaEuu5hC3AwNldF0",
+          authDomain: "questions-cf679.firebaseapp.com",
+          databaseURL: "https://questions-cf679-default-rtdb.firebaseio.com",
+          projectId: "questions-cf679",
+          storageBucket: "questions-cf679.appspot.com",
+          messagingSenderId: "1020439570786",
+          appId: "1:1020439570786:web:ae54968417f81239aea43b"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // firebase.analytics();
+
+        var database = firebase.database();
+
+        var currentPostId = 0;
+        console.log(currentPostId);
+
+
+        const cmts = firebase.database().ref('comments/' + currentPostId);
+        cmts.on('value', (snapshot) => {
+
+            function fillComments() {
+                var comments = snapshot.val();
+                numComments = comments.length;
+                document.getElementById("comments-container").innerHTML = "";
+
+                for (var i = 0; i < comments.length; i++)
+                    document.getElementById("comments-container").innerHTML += "<div class='comment-container spaced'>" + comments[i].comment + "<div class='comment-metadata'>" + comments[i].author + " • " + comments[i].timestamp + "</div></div>";
+            }
+
+            fillComments();
+        });
+
+        function submitComment() {
+
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date + ' ' + time;
+
+            firebase.database().ref('comments/' + currentPostId + '/' + numComments).set({
+                comment: document.getElementById("commentBox").value,
+                author: document.getElementById("commentBox-author").value,
+                timestamp: dateTime
+
+            }, function(error) {
+                if (error) {
+                    console.log("Comment failed...");
+                } else {
+                    console.log("Commented :)");
+                }
+            });
+
+            document.getElementById("commentBox").value = "Comment...";
+        }
+    </script>
+
+
+    <script type="text/javascript" src="script.js"></script>
+</body>
+
+</html>
