@@ -8,11 +8,6 @@ body {
     background: #f2f5ff;
 }
 
-#page {
-    opacity: 0;
-    transition-duration: 500ms;
-}
-
 h3 {
     font-family: IBM Plex Serif;
     font-weight: 600;
