@@ -15,16 +15,18 @@
 
         </div>
 
-        <form class="create-sheet">
-            <textarea placeholder="Take a note..." id="phraseDiv" class="comment-box" rows=4></textarea><br>
+    </div>
+
+        <div class="create-sheet" id="create-sheet">
+            <textarea placeholder="Take a note..." id="phraseDiv" class="comment-box" rows=1></textarea><br>
             <button class="mic-button" id="startRecognizeOnceAsyncButton"><i class="inline" data-feather="mic"></i></button>
 
 
-            <a onclick="submitComment()" class="button"><i class="icon20" data-feather="send"></i>Post</a>
-        </form>
+            <button onclick="submitComment()" class="mic-button"><i data-feather="send"></i></button>
+        </div>
 
 
-    </div>
+
 
 
             <input style="display:none;" id="subscriptionKey" type="text" size="40" value="52f270b7985349eca596ad11f597076b">
@@ -75,7 +77,7 @@
         var authorizationToken;
         var SpeechSDK;
         var recognizer;
-    
+
         document.addEventListener("DOMContentLoaded", function () {
           startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
           subscriptionKey = document.getElementById("subscriptionKey");
@@ -83,6 +85,11 @@
           phraseDiv = document.getElementById("phraseDiv");
     
           startRecognizeOnceAsyncButton.addEventListener("click", function () {
+
+            // Gyan's logic to show or hide HVC
+            document.getElementById("create-sheet").classList.toggle("create-sheet-active");
+            document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
+
             startRecognizeOnceAsyncButton.disabled = true;
             phraseDiv.innerHTML = "";
     
@@ -106,6 +113,12 @@
               function (result) {
                 startRecognizeOnceAsyncButton.disabled = false;
                 phraseDiv.innerHTML += result.text;
+                
+                // Gyan's logic to show or hide HVC
+                document.getElementById("create-sheet").classList.toggle("create-sheet-active");
+                document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
+                submitComment();
+                
                 window.console.log(result);
     
                 recognizer.close();
@@ -124,9 +137,6 @@
           if (!!window.SpeechSDK) {
             SpeechSDK = window.SpeechSDK;
             startRecognizeOnceAsyncButton.disabled = false;
-    
-            document.getElementById('content').style.display = 'block';
-            document.getElementById('warning').style.display = 'none';
     
             // in case we have a function for getting an authorization token, call it.
             if (typeof RequestAuthorizationToken === "function") {
@@ -218,8 +228,9 @@
                 }
             });
 
-            document.getElementById("phraseDiv").placeholder = "Take a note...";
+            document.getElementById("phraseDiv").value = "";
         }
+
     </script>
 
 
