@@ -1,17 +1,19 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&display=swap");
+
+html{
+    margin: 0;
+}
+
 body {
     margin: 0;
     line-height: 1.4;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    margin: auto;
+    margin: 0;
     color: #2a3134;
-    background: #f2f5ff;
 }
 
-h3 {
-    font-family: IBM Plex Serif;
-    font-weight: 600;
-    font-size: 24px;
+h1 {
+    font-weight: 800;
+    font-size: 28px;
     padding: 24px 0 4px 0;
     /* Dark */
     color: #30345a;
@@ -22,6 +24,74 @@ h4 {
     margin-right: 24px;
     margin-bottom: -10px;
 }
+
+.sticky-note {
+    border: 1px solid #CCE6FF;
+    border-top: 4px solid #CCE6FF;
+    background-color: #E7F3FF;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 8px 16px;
+}
+
+.create-sheet{
+    position: fixed;
+    padding: 8px 20px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    margin: 0;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+.bottom-mic{
+    display: inline-block;
+    text-align: right;
+}
+
+
+
+.comment-box {
+    width: 600px;
+    padding: 12px;
+    margin: 4px auto 16px auto;
+    line-height: 1.5;
+    font-size: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: #2a3134;
+    border: none;
+    display: inline-block;
+}
+
+.comment-box:focus{
+    outline: none;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    .comment-box {
+        max-width: 80%;
+        margin: 4px auto 16px auto;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .spaced {
     max-width: 600px;
@@ -436,14 +506,9 @@ a.alert.weblink:visited {
 
 .comment-section {
     background: #ffffff;
-    border-top: 1px solid #c1d3d9;
 }
 
-.comment-container {
-    padding: 8px 0 12px 0;
-    border-bottom: 0.5px solid #abcbc8;
-    margin-bottom: 4px;
-}
+
 
 .comment-metadata {
     padding-top: 4px;
@@ -480,18 +545,7 @@ a.alert.weblink:visited {
     padding-bottom: 4px;
 }
 
-.comment-box {
-    width: 600px;
-    padding: 12px;
-    margin: 4px auto 16px auto;
-    line-height: 1.5;
-    font-size: 16px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: #2a3134;
-    border: 0.5px solid rgba(10, 48, 65, 0.25);
-    box-shadow: 0px 0px 4px rgba(70, 136, 241, 0.2);
-    border-radius: 4px;
-}
+
 
 footer {
     margin-top: 40px;
@@ -606,10 +660,7 @@ footer a {
     input[type="search"] {
         max-width: 160px;
     }
-    .comment-box {
-        max-width: 100%;
-        margin: 4px auto 16px auto;
-    }
+
     .landing {
         flex-direction: column;
     }
