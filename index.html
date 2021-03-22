@@ -17,7 +17,7 @@
 
         <form class="create-sheet">
             <textarea placeholder="Take a note..." id="phraseDiv" class="comment-box" rows=4></textarea><br>
-            <td><button id="startRecognizeOnceAsyncButton"><i class="inline" data-feather="mic"></i></button></td>
+            <button class="mic-button" id="startRecognizeOnceAsyncButton"><i class="inline" data-feather="mic"></i></button>
 
 
             <a onclick="submitComment()" class="button"><i class="icon20" data-feather="send"></i>Post</a>
@@ -27,8 +27,8 @@
     </div>
 
 
-            <input id="subscriptionKey" type="text" size="40" value="52f270b7985349eca596ad11f597076b">
-            <input id="serviceRegion" type="text" size="40" value="centralindia">
+            <input style="display:none;" id="subscriptionKey" type="text" size="40" value="52f270b7985349eca596ad11f597076b">
+            <input style="display:none;" id="serviceRegion" type="text" size="40" value="centralindia">
     
       <!-- </uidiv> -->
     
@@ -218,7 +218,7 @@
                 }
             });
 
-            document.getElementById("phraseDiv").value = "Take a note...";
+            document.getElementById("phraseDiv").placeholder = "Take a note...";
         }
     </script>
 

@@ -70,7 +70,14 @@ h4 {
     outline: none;
 }
 
-
+.mic-button{
+    background: #7719AA;
+    color: #ffffff;
+    border-radius: 100px;
+    width: 48px;
+    height: 48px;
+    border: none;
+}
 
 @media only screen and (max-width: 768px) {
     .comment-box {
