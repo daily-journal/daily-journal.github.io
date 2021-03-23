@@ -18,11 +18,12 @@
     </div>
 
         <div class="create-sheet" id="create-sheet">
+            <div id="handle" class="handle"></div>
             <textarea placeholder="Take a note..." id="phraseDiv" class="comment-box" rows=1></textarea><br>
             <button class="mic-button" id="startRecognizeOnceAsyncButton"><i class="inline" data-feather="mic"></i></button>
 
 
-            <button onclick="submitComment()" class="mic-button"><i data-feather="send"></i></button>
+            <!-- <button onclick="submitComment()" class="mic-button"><i data-feather="send"></i></button> -->
         </div>
 
 
@@ -84,11 +85,14 @@
           startRecognizeOnceAsyncButton.addEventListener("click", function () {
 
             // Gyan's logic to show or hide HVC
+            console.log("Showed HVC");
             document.getElementById("create-sheet").classList.toggle("create-sheet-active");
             document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
+            document.getElementById("phraseDiv").classList.toggle("comment-box-active");
+            
 
             startRecognizeOnceAsyncButton.disabled = true;
-            phraseDiv.innerHTML = "";
+            // phraseDiv.innerHTML = "";
     
             // if we got an authorization token, use the token. Otherwise use the provided subscription key
             var speechConfig;
@@ -109,12 +113,15 @@
             recognizer.recognizeOnceAsync(
               function (result) {
                 startRecognizeOnceAsyncButton.disabled = false;
-                phraseDiv.innerHTML += result.text;
+                phraseDiv.value = result.text;
                 
                 // Gyan's logic to show or hide HVC
+                console.log("Hidden HVC");
+                submitComment();
                 document.getElementById("create-sheet").classList.toggle("create-sheet-active");
                 document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
-                submitComment();
+                document.getElementById("phraseDiv").classList.toggle("comment-box-active");
+                // document.getElementById("phraseDiv").value = "";
 
                 window.console.log(result);
     
@@ -187,22 +194,26 @@
 
         var currentPostId = 0;
         var numComments = 0;
-        console.log(currentPostId);
 
-
-        const cmts = firebase.database().ref('comments/' + currentPostId);
-        cmts.on('value', (snapshot) => {
+        const stky = firebase.database().ref('stickies');
+        stky.on('value', (snapshot) => {
 
             function fillComments() {
-                var comments = snapshot.val();
-                numComments = comments.length;
+
+                // Clear stickies
                 document.getElementById("comments-container").innerHTML = "";
 
-                for (var i = 0; i < comments.length; i++)
-                    document.getElementById("comments-container").innerHTML += "<div class='sticky-note note-animation'>" + comments[i].comment + "<div class='comment-metadata'>" + comments[i].timestamp + "</div></div>";
+                // Add all stickies
+                snapshot.forEach((childSnapshot) => {
+                var stickyKey = childSnapshot.key;
+                var stickyData = childSnapshot.val();
+                document.getElementById("comments-container").innerHTML += "<div class='sticky-note note-animation'>" + stickyData.comment + "<div class='comment-metadata'>" + stickyData.timestamp + "</div></div>";
+                console.log("Just made a sticky: " + childSnapshot.val() );
+
+                });
+                    
             
             }
-
             fillComments();
         });
 
@@ -212,20 +223,22 @@
             var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             var dateTime = date + ' ' + time;
+            var stickypush = document.getElementById("phraseDiv").value;
 
-            firebase.database().ref('comments/' + currentPostId + '/' + numComments).set({
-                comment: document.getElementById("phraseDiv").value,
+            var newSticky = stky.push();
+
+            newSticky.set({
+                comment: stickypush,
                 timestamp: dateTime
 
             }, function(error) {
                 if (error) {
                     console.log("Comment failed...");
                 } else {
-                    console.log("Commented :)");
+                    console.log("Commented: " + stickypush);
+                    document.getElementById("phraseDiv").value = "";
                 }
             });
-
-            document.getElementById("phraseDiv").value = "";
         }
 
     </script>
