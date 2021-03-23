@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Sticky Notes</title>
+    <title>Fake Checker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -10,8 +10,8 @@
 <body id="page">
 
     <div class="comment-section">
-        <h1 class="spaced">Sticky Notes</h1>
-        <div id="comments-container">
+            <button onclick="window.location.href='index.html'" class="mic-button"><i data-feather="arrow-left"></i></button>
+            <div id="comments-container-fullscreen">
 
         </div>
 
@@ -190,32 +190,27 @@
         firebase.initializeApp(firebaseConfig);
         // firebase.analytics();
 
-        function openNote(noteKey){
-            window.location.href = '/note.html?' + noteKey;
-        }
-
         var database = firebase.database();
-        
+
+        var currentStickyId = location.search.substring(1);
+        console.log(currentStickyId);
         var numComments = 0;
 
-        const stky = firebase.database().ref('stickies');
+        const stky = firebase.database().ref('stickies/' + currentStickyId);
+        
         stky.on('value', (snapshot) => {
 
             function fillComments() {
 
-                // Clear stickies
-                document.getElementById("comments-container").innerHTML = "";
-
                 // Add all stickies
-                snapshot.forEach((childSnapshot) => {
-                var stickyKey = childSnapshot.key;
-                var stickyData = childSnapshot.val();
-                document.getElementById("comments-container").innerHTML += "<div id=" + stickyKey + " class='sticky-note note-animation' onclick=openNote(this.id)>" + stickyData.comment + "<div class='comment-metadata'>" + stickyData.timestamp + "</div></div>";
+
+                var stickyKey = snapshot.key;
+                var stickyData = snapshot.val();
+                
+                document.getElementById("comments-container-fullscreen").innerHTML += "<div id=" + stickyKey + " class='sticky-note-fullscreen' onclick=openNote(this.id)>" + stickyData.comment + "<div class='comment-metadata-fullscreen'>" + stickyData.timestamp + "</div></div>";
                 console.log("Just made a sticky: " + childSnapshot.val() );
-                });
-                    
-            
-            }
+                }
+                  
             fillComments();
         });
 

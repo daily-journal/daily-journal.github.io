@@ -32,7 +32,19 @@ h4 {
     border-radius: 4px;
     padding: 10px;
     margin: 6px 14px;
-    transition: 1s;;
+    transition: 1s;
+}
+
+.sticky-note-fullscreen{
+    border: 2px solid #CCE6FF;
+    border-top: 8px solid #CCE6FF;
+    background-color: #E7F3FF;
+    border-radius: 8px;
+    padding: 20px 10px;
+    margin: 0;
+    transition: 1s;
+    bottom: 0;
+    height: 100vh;
 }
 
 .create-sheet{
@@ -64,6 +76,14 @@ h4 {
     display: flex;
     flex-direction: column-reverse;
 }
+
+#comments-container-fullscreen{
+    display: block;
+    height: 100%;
+    flex-direction: column-reverse;
+}
+
+
 
 .handle{
     position: absolute;
