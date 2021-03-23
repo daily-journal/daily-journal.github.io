@@ -80,18 +80,37 @@ h4 {
     outline: none;
 }
 
+@keyframes mic-listening {
+    0%   {border: 2px solid #ECDFF3;}
+    25%  {border: 8px solid #ECDFF3;}
+    50%  {border: 24px solid #ECDFF3;}
+    100% {border: 12px solid #ECDFF3;}
+  }
+
 .mic-button-active{
     background: #7719AA !important;
     color: #ffffff !important;
+    border: 8px solid #ffffff;
+    animation-name: mic-listening;
+    animation-duration: 3s;
 }
 
 .mic-button{
     background: #fff;
     color: #333;
     border-radius: 100px;
-    width: 52px;
-    height: 52px;
+    padding: 20px;
     border: none;
+}
+
+@keyframes note-appear {
+    0%   {opacity: 0; transform: translateY(-20px);}
+    100% {opacity: 1; transform: translateY(0px);}
+  }
+
+.note-animation{
+    animation-name: note-appear;
+    animation-duration: .5s;
 }
 
 @media only screen and (max-width: 768px) {

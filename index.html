@@ -26,9 +26,6 @@
         </div>
 
 
-
-
-
             <input style="display:none;" id="subscriptionKey" type="text" size="40" value="52f270b7985349eca596ad11f597076b">
             <input style="display:none;" id="serviceRegion" type="text" size="40" value="centralindia">
     
@@ -118,7 +115,7 @@
                 document.getElementById("create-sheet").classList.toggle("create-sheet-active");
                 document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
                 submitComment();
-                
+
                 window.console.log(result);
     
                 recognizer.close();
@@ -202,7 +199,7 @@
                 document.getElementById("comments-container").innerHTML = "";
 
                 for (var i = 0; i < comments.length; i++)
-                    document.getElementById("comments-container").innerHTML += "<div class='sticky-note'>" + comments[i].comment + "<div class='comment-metadata'>" + comments[i].timestamp + "</div></div>";
+                    document.getElementById("comments-container").innerHTML += "<div class='sticky-note note-animation'>" + comments[i].comment + "<div class='comment-metadata'>" + comments[i].timestamp + "</div></div>";
             
             }
 
