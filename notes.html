@@ -5,27 +5,28 @@ layout: default
 ---
 
 
-    <article id="pageContent" class="post h-entry animated fadeInUp" itemscope itemtype="http://schema.org/BlogPosting">
+<article id="pageContent" class="post h-entry animated fadeInUp" itemscope itemtype="http://schema.org/BlogPosting">
 
-      <header class="post-header">
+  <header class="post-header">
 
-        <h1 id="title" class="post-title p-name" itemprop="name headline">
-          <span id="htmlTitle" onclick="this.contentEditable = 'true';" contenteditable="true">Notes</span>
-        </h1>
+    <h1 id="title" class="post-title p-name" itemprop="name headline">
+      <span id="htmlTitle" onclick="this.contentEditable = 'true';" contenteditable="true">Notes</span>
+    </h1>
 
-        <div id="htmlSubtitle" onclick="this.contentEditable = 'true';" contenteditable="true" class="sub-title">Editable pages written on the fly.</div>
+    <div id="htmlSubtitle" onclick="this.contentEditable = 'true';" contenteditable="true" class="sub-title">Editable
+      pages written on the fly.</div>
 
-      </header>
+  </header>
 
-      <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
+  <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
 
-      </div>
-
-    </article>
   </div>
 
+</article>
+</div>
+
 <script type="module">
-  
+
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js";
@@ -39,15 +40,15 @@ layout: default
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
   const firebaseConfig = {
-      apiKey: "AIzaSyCLkh1I6haUU51EslRGSlXkXiYqOkvcCKA",
-      authDomain: "idea-cbd6c.firebaseapp.com",
-      databaseURL: "https://idea-cbd6c-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "idea-cbd6c",
-      storageBucket: "idea-cbd6c.appspot.com",
-      messagingSenderId: "965624401030",
-      appId: "1:965624401030:web:accca7b65fddd344591507",
-      measurementId: "G-CVF81V77DF"
-    };
+    apiKey: "AIzaSyBcSljzd_rMlOWk9zvLaoNdnRVYp4EBwc0",
+    authDomain: "journal-with-voice.firebaseapp.com",
+    databaseURL: "https://journal-with-voice-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "journal-with-voice",
+    storageBucket: "journal-with-voice.appspot.com",
+    messagingSenderId: "184119101450",
+    appId: "1:184119101450:web:dec08fb998fb56148637f3",
+    measurementId: "G-01LQP6SLN8"
+  };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -65,33 +66,33 @@ layout: default
 
 
   // One time run
-    onValue(reference, (snapshot) => {
+  onValue(reference, (snapshot) => {
 
-      snapshot.forEach((postSnapshot) => {
-        const postKey = postSnapshot.key;
-        const postData = postSnapshot.val();
+    snapshot.forEach((postSnapshot) => {
+      const postKey = postSnapshot.key;
+      const postData = postSnapshot.val();
 
-        var thisCode = "<div class='dummy animated fadeInUp'>" +
-          "<h3 class='post-title'>" + "<a href='/" + postKey + "'>" + postData.title + "</a></h3>" +
-          "<p class='post-subtitle'>" + postData.subtitle + "</p>" +
-          "</div>";
+      var thisCode = "<div class='dummy animated fadeInUp'>" +
+        "<h3 class='post-title'>" + "<a href='/" + postKey + "'>" + postData.title + "</a></h3>" +
+        "<p class='post-subtitle'>" + postData.subtitle + "</p>" +
+        "</div>";
 
       document.getElementById('htmlBody').innerHTML += thisCode;
       numposts++;
-      });
-
-      const collection = document.getElementsByClassName("dummy");
-      for (let i = 0; i < collection.length; i++) {
-        collection[i].style.animationDelay = ( i * 40 ) + 'ms';
-      }
-
-
     });
 
+    const collection = document.getElementsByClassName("dummy");
+    for (let i = 0; i < collection.length; i++) {
+      collection[i].style.animationDelay = (i * 40) + 'ms';
+    }
 
 
-    // check if logged in
-    getUserDetails();
+  });
+
+
+
+  // check if logged in
+  getUserDetails();
 
   function signInUser() {
     console.log("Trying to sign in...")
@@ -110,35 +111,34 @@ layout: default
 
     const auth = getAuth();
 
-getRedirectResult(auth)
-.then((result) => {
-  // This gives you a Google Access Token. You can use it to access Google APIs.
-  const credential = GoogleAuthProvider.credentialFromResult(result);
-  const token = credential.accessToken;
+    getRedirectResult(auth)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access Google APIs.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
 
-  console.log(credential);
-  console.log(token);
+        console.log(credential);
+        console.log(token);
 
-  // The signed-in user info.
-  const user = result.user;
-  console.log(user);
-  console.log("i think you are " + user.displayName);
-  vdisplayname = user.displayName;
-  vphotourl = user.photoURL;
-  showUserOnPage();
-  
-}).catch((error) => {
-  // Handle Errors here.
-  const errorCode = error.code;
-  const errorMessage = error.message;
-  // The email of the user's account used.
-  const email = error.email;
-  // The AuthCredential type that was used.
-  const credential = GoogleAuthProvider.credentialFromError(error);
-  // ...
-});
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
+        console.log("i think you are " + user.displayName);
+        vdisplayname = user.displayName;
+        vphotourl = user.photoURL;
+        showUserOnPage();
+
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
 
   }
 
-  </script>
-
+</script>
