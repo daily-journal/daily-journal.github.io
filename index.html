@@ -1,40 +1,56 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Microsoft Cognitive Services Speech SDK JavaScript Quickstart</title>
+  <title>Voicenote</title>
   <meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;">
-  <!-- <uidiv> -->
-  <div id="warning">
-    <h1 style="font-weight:500;">Speech Recognition Speech SDK not found (microsoft.cognitiveservices.speech.sdk.bundle.js missing).</h1>
+
+<body>
+
+  <center>
+    <button class="loginbutton" type="button" id="logmein">Log in and Edit</button>
+    
+    <div class="logincontainer">
+      <div id="containerOfUser" class="usercontainer displaynone">
+        <img class="userphoto" src="" id="photoOfUser">
+        <div class="vertical">
+          <div class="username" id="nameOfUser">no name</div>
+          <div class="userstatus" id="statusOfUser">Edit access</div>
+      </div>
+      </div>
+    </div>
+    
+    </center>
+
+  <div id="content">
+    <div contenteditable="true" id="phraseDiv"></div>
+    <div class="floatingnav">
+      <div id="timer"></div>
+      <button id="startRecognizeOnceAsyncButton">🔴 New recording</button>
+    </div>
   </div>
-  
-  <div id="content" style="display:none">
-    <table width="100%">
-      <tr>
-        <td></td>
-        <td><h1 style="font-weight:500;">Microsoft Cognitive Services Speech SDK JavaScript Quickstart</h1></td>
-      </tr>
-      <tr>
-        <td align="right"><a href="https://docs.microsoft.com/azure/cognitive-services/speech-service/get-started" target="_blank">Subscription</a>:</td>
-        <td><input id="subscriptionKey" type="text" size="40" value=""b97c93178a0548b59d99e8f0977499b8""></td>
-      </tr>
-      <tr>
-        <td align="right">Region</td>
-        <td><input id="serviceRegion" type="text" size="40" value="centralindia"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td><button id="startRecognizeOnceAsyncButton">Start recognition</button></td>
-      </tr>
-      <tr>
-        <td align="right" valign="top">Results</td>
-        <td><textarea id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea></td>
-      </tr>
-    </table>
-  </div>
-  <!-- </uidiv> -->
+
+  <article id="pageContent" class="post h-entry animated fadeInUp" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <header class="post-header">
+
+      <h1 id="title" class="post-title p-name" itemprop="name headline">
+        <span id="htmlTitle" onclick="this.contentEditable = 'true';" contenteditable="true">Notes</span>
+      </h1>
+
+      <div id="htmlSubtitle" onclick="this.contentEditable = 'true';" contenteditable="true" class="sub-title">Editable pages written on the fly.</div>
+
+    </header>
+
+    <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
+
+    </div>
+
+  </article>
+</div>
 
   <!-- <speechsdkref> -->
   <!-- Speech SDK reference sdk. -->
@@ -44,6 +60,29 @@
   <!-- <quickstartcode> -->
   <!-- Speech SDK USAGE -->
   <script>
+
+    var timer = document.getElementById("timer");
+
+
+    function startTimer() {
+      timer.style.display = "inline-block";
+      timer.innerHTML = "🔴 0:00";
+      var time = 0;
+      var interval = setInterval(function () {
+      time++;
+      var minutes = Math.floor(time / 60);
+      var seconds = time % 60;
+      timer.innerHTML = "🔴 " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+      }, 1000);
+
+      return interval; // Return the interval ID to be able to clear it later
+    }
+
+    function stopTimer(interval) {
+      clearInterval(interval); // Clear the interval using the ID
+      timer.style.display = "none";
+    }
+
     // status fields and start button in UI
     var phraseDiv;
     var startRecognizeOnceAsyncButton;
@@ -55,22 +94,23 @@
 
     document.addEventListener("DOMContentLoaded", function () {
       startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
-      subscriptionKey = "b97c93178a0548b59d99e8f0977499b8";
+      subscriptionKey = "5ab226e547274f4a827f1336efb4f46a";
       serviceRegion = "centralindia";
       phraseDiv = document.getElementById("phraseDiv");
 
       startRecognizeOnceAsyncButton.addEventListener("click", function () {
         startRecognizeOnceAsyncButton.disabled = true;
-        phraseDiv.innerHTML = "";
+        startRecognizeOnceAsyncButton.style.display = "none";
+        var interval = startTimer();
 
-        if (subscriptionKey.value === "" || subscriptionKey.value === "subscription") {
+        if (subscriptionKey === "" || subscriptionKey === "subscription") {
           alert("Please enter your Microsoft Cognitive Services Speech subscription key!");
           return;
         }
-        var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey.value, serviceRegion.value);
+        var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
 
         speechConfig.speechRecognitionLanguage = "en-US";
-        var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+        var audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
         recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
         recognizer.recognizeOnceAsync(
@@ -78,6 +118,8 @@
             startRecognizeOnceAsyncButton.disabled = false;
             phraseDiv.innerHTML += result.text;
             window.console.log(result);
+            stopTimer(interval);
+            startRecognizeOnceAsyncButton.style.display = "block";
 
             recognizer.close();
             recognizer = undefined;
@@ -86,6 +128,8 @@
             startRecognizeOnceAsyncButton.disabled = false;
             phraseDiv.innerHTML += err;
             window.console.log(err);
+            stopTimer(interval);
+            startRecognizeOnceAsyncButton.style.display = "block";
 
             recognizer.close();
             recognizer = undefined;
@@ -96,11 +140,132 @@
         SpeechSDK = window.SpeechSDK;
         startRecognizeOnceAsyncButton.disabled = false;
 
-        document.getElementById('content').style.display = 'block';
-        document.getElementById('warning').style.display = 'none';
+        console.log("SpeechSDK is not available");
       }
     });
   </script>
   <!-- </quickstartcode> -->
+
+
+  <script type="module">
+  
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js";
+    import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js";
+    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js";
+  
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  
+    const firebaseConfig = {
+        apiKey: "AIzaSyCLkh1I6haUU51EslRGSlXkXiYqOkvcCKA",
+        authDomain: "idea-cbd6c.firebaseapp.com",
+        databaseURL: "https://idea-cbd6c-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "idea-cbd6c",
+        storageBucket: "idea-cbd6c.appspot.com",
+        messagingSenderId: "965624401030",
+        appId: "1:965624401030:web:accca7b65fddd344591507",
+        measurementId: "G-CVF81V77DF"
+      };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getDatabase();
+    const provider = new GoogleAuthProvider();
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    const reference = ref(db, '/');
+  
+    var vdisplayname = "";
+    var vphotourl = "";
+    var numposts = 0;
+  
+  
+    // One time run
+      onValue(reference, (snapshot) => {
+  
+        snapshot.forEach((postSnapshot) => {
+          const postKey = postSnapshot.key;
+          const postData = postSnapshot.val();
+  
+          var thisCode = "<div class='dummy animated fadeInUp'>" +
+            "<h3 class='post-title'>" + "<a href='/" + postKey + "'>" + postData.title + "</a></h3>" +
+            "<p class='post-subtitle'>" + postData.subtitle + "</p>" +
+            "</div>";
+  
+        document.getElementById('htmlBody').innerHTML += thisCode;
+        numposts++;
+        });
+  
+        const collection = document.getElementsByClassName("dummy");
+        for (let i = 0; i < collection.length; i++) {
+          collection[i].style.animationDelay = ( i * 40 ) + 'ms';
+        }
+  
+  
+      });
+  
+  
+  
+      // check if logged in
+      getUserDetails();
+  
+    function signInUser() {
+      console.log("Trying to sign in...")
+      signInWithRedirect(auth, provider);
+    }
+  
+    function showUserOnPage() {
+      document.getElementById('containerOfUser').classList.remove('displaynone');
+      document.getElementById('photoOfUser').src = vphotourl;
+      document.getElementById('nameOfUser').innerHTML = vdisplayname;
+      vlogin.classList.add('displaynone');
+    }
+  
+    function getUserDetails() {
+      console.log("Trying to get user details...");
+  
+      const auth = getAuth();
+  
+  getRedirectResult(auth)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access Google APIs.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+  
+    console.log(credential);
+    console.log(token);
+  
+    // The signed-in user info.
+    const user = result.user;
+    console.log(user);
+    console.log("i think you are " + user.displayName);
+    vdisplayname = user.displayName;
+    vphotourl = user.photoURL;
+    showUserOnPage();
+    
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
+  
+    }
+  
+    </script>
+  
+
 </body>
+
 </html>
