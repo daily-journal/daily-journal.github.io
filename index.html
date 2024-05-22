@@ -24,6 +24,29 @@
 
       <h1 id="title">Daily Journal</h1>
 
+      <div class="calendar">
+        <table>
+          <tr>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>T</th>
+            <th>F</th>
+            <th>S</th>
+            <th>S</th>
+          </tr>
+          <tr>
+            <td id="monday"></td>
+            <td id="tuesday"></td>
+            <td id="wednesday"></td>
+            <td id="thursday"></td>
+            <td id="friday"></td>
+            <td id="saturday"></td>
+            <td id="sunday"></td>
+          </tr>
+        </table>
+      </div>
+
     </header>
 
     <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
@@ -90,6 +113,32 @@
 
     var today = new Date();
     var todayKey = generateUniqueKey(today);
+
+    // initialise calendar
+
+    var weekdaytoday = today.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
+
+    document.getElementById(weekdaytoday).classList = 'today';
+
+    var days = {
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6,
+      'sunday': 7
+    };
+
+    var dayNumber = days[weekdaytoday];
+
+    for (var i = 0; i < 7; i++) {
+  var day = new Date();
+  day.setDate(today.getDate() - (dayNumber - 1) + i);
+  var dayKey = generateUniqueKey(day);
+  var weekday = day.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
+  document.getElementById(weekday).innerHTML = "<a href='/" + dayKey + "'>" + day.getDate() + "</a>";
+}
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -214,7 +263,7 @@
         });
     }
 
-    window.saveDictationToFirebaseWithKey = function(text, key) {
+    window.saveDictationToFirebaseWithKey = function (text, key) {
       const newDictationRef = ref(db, '/' + key);
 
       // Append the text to the existing dictation data

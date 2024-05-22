@@ -2,8 +2,13 @@
 :root {
     --primary-color: #2a3134;
     --secondary-color: #30345a;
-    --background-color: #ffffff;
-    --accent-color: #49d2a7;
+    --background-color: #FAF6ED;
+    --accent-color: #9747FF;
+    --accent-color-light: #b6a1ff;
+    --accent-color-dark: #6f3dff;
+
+    --foreground-color: #2a3134;
+
     --border-color: #b0b4c2;
     --text-color: #2a3134;
     --link-color: #4b83ff;
@@ -28,6 +33,46 @@
 
 html{
     margin: 0 20px;
+    background-color: var(--background-color);
+}
+
+table{
+    text-align: center;
+    width: 100%;
+}
+
+td{
+    background: var(--fabricated-color);
+    padding: 8px;
+    border-radius: 20px;
+}
+
+a:link {
+    color: var(--accent-color-dark);
+    transition: .2s;
+  }
+  
+  /* visited link */
+  a:visited {
+    color: var(--accent-color);
+  }
+  
+  /* mouse over link */
+  a:hover {
+    color: var(--accent-color);
+  }
+  
+  /* selected link */
+  a:active {
+    color: var(--accent-color-light);
+  }
+
+.today{
+    background-color: var(--accent-color);
+}
+
+.today a {
+    color: var(--background-color);
 }
 
 body {
