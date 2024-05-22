@@ -50,7 +50,6 @@
     </header>
 
     <div id="htmlBody">
-      Tap here to type or record a note.
     </div>
 
   </article>
@@ -290,40 +289,27 @@
     // One time run
     onValue(reference, (snapshot) => {
 
-      document.getElementById('htmlBody').innerHTML = "";
+      document.getElementById('htmlBody').innerHTML = "Tap here to type or record a note.";
 
       snapshot.forEach((postSnapshot) => {
-        console.log('Post snapshot:', postSnapshot);
-        const postKey = postSnapshot.key;
-        console.log('Post key in snapshot:', postKey);
+
         const postData = postSnapshot.val();
         console.log('Post data in snapshot:', postData);
-        console.log('Postdata.text in snapshot:', postData.text);
-        console.log('Postdata.value in snapshot:', postData.text);
-
 
           var prettyDate = prettifyUniqueKey(postKey);
-
           title.innerHTML = prettyDate;
-
           var thisCode = `
         <div 
         contenteditable="true" 
-        onblur="saveDictationToFirebaseWithKey(this.innerHTML,'${postKey}')" 
+        onblur="saveDictationToFirebaseWithKey(this.innerHTML,'${pageKey}')" 
         onclick="this.contenteditable='true'" 
         class='journal-content'>
-        ${postData.text}
+        ${postData}
         </div>`;
 
           document.getElementById('htmlBody').innerHTML += thisCode;
       });
 
-
-
-      const collection = document.getElementsByClassName("dummy");
-      for (let i = 0; i < collection.length; i++) {
-        collection[i].style.animationDelay = (i * 40) + 'ms';
-      }
 
     });
   </script>
