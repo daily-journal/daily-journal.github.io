@@ -298,8 +298,8 @@
         var prettyDate = prettifyUniqueKey(postKey);
 
         var thisCode = `<div class='dummy animated fadeInUp'>
-        <h3 class='post-title'><a href='/journal/${postKey}'>${prettyDate}</a></h3>
-        <p contenteditable="true" onblur="saveDictationToFirebaseWithKey(this.innerHTML,'${postKey}')" onclick="this.contenteditable='true'" class='post-subtitle'>${postData.text}</p>
+        <h3 class='journal-date'><a href='/journal/${postKey}'>${prettyDate}</a></h3>
+        <p contenteditable="true" onblur="saveDictationToFirebaseWithKey(this.innerHTML,'${postKey}')" onclick="this.contenteditable='true'" class='journal-content'>${postData.text}</p>
       </div>`;
 
         document.getElementById('htmlBody').innerHTML += thisCode;

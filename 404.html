@@ -1,103 +1,91 @@
----
+<!DOCTYPE html>
+<html>
 
-layout: default
+<head>
+  <title>Voicenote</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 
----
-<center>
-<button class="loginbutton" type="button" id="logmein">Log in and Edit</button>
+<body>
 
-<div class="logincontainer">
-  <div id="containerOfUser" class="usercontainer displaynone">
-    <img class="userphoto" src="" id="photoOfUser">
-    <div class="vertical">
-      <div class="username" id="nameOfUser">no name</div>
-      <div class="userstatus" id="statusOfUser">Edit access</div>
+  <div id="content">
+    <div contenteditable="true" id="phraseDiv"></div>
+    <div class="floatingnav">
+      <div id="timer"></div>
+      <button id="startRecognizeOnceAsyncButton">🔴 Record</button>
+    </div>
   </div>
-  </div>
-</div>
 
-</center>
+  <article id="pageContent" class="post h-entry animated fadeInUp" itemscope itemtype="http://schema.org/BlogPosting">
 
-    <article id="pageContent" class="post h-entry displaynone" itemscope itemtype="http://schema.org/BlogPosting">
+    <header class="post-header">
 
-      <header class="post-header">
+      <h1 id="title">Daily Journal</h1>
 
-        <h1 id="title" class="post-title p-name" itemprop="name headline">
-          <span id="htmlTitle">Loading...</span>
-        </h1>
-
-        <div id="htmlSubtitle" class="sub-title">You can type things here.</div>
-
-      </header>
-
-      <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
-
+      <div class="calendar">
+        <table>
+          <tr>
+            <th>M</th>
+            <th>T</th>
+            <th>W</th>
+            <th>T</th>
+            <th>F</th>
+            <th>S</th>
+            <th>S</th>
+          </tr>
+          <tr>
+            <td id="monday"></td>
+            <td id="tuesday"></td>
+            <td id="wednesday"></td>
+            <td id="thursday"></td>
+            <td id="friday"></td>
+            <td id="saturday"></td>
+            <td id="sunday"></td>
+          </tr>
+        </table>
       </div>
 
-    </article>
+    </header>
 
+    <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
 
+    </div>
 
-    <script src="https://gyanl.com/assets/pell.js"></script>
+  </article>
+  </div>
 
-    <script type="text/javascript">
+  <!-- <speechsdkref> -->
+  <!-- Speech SDK reference sdk. -->
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+  <!-- </speechsdkref> -->
 
+  <!-- <quickstartcode> -->
+  <!-- Speech SDK USAGE -->
+  <script type="module">
 
-      // Initialize pell on an HTMLElement
-  pell.init({
-    // <HTMLElement>, required
-    element: document.getElementById('htmlBody'),
+    function generateUniqueKey(timestamp) {
+      const day = timestamp.getDate().toString().padStart(2, '0');
+      const month = (timestamp.getMonth() + 1).toString().padStart(2, '0');
+      const year = timestamp.getFullYear().toString();
+      const uniqueKey = day + month + year;
+      return uniqueKey;
 
-    // <Function>, required
-    // Use the output html, triggered by element's `oninput` event
-    onChange: html => console.log(html),
-
-    // <string>, optional, default = 'div'
-    // Instructs the editor which element to inject via the return key
-    defaultParagraphSeparator: 'p',
-
-    // <boolean>, optional, default = false
-    // Outputs <span style="font-weight: bold;"></span> instead of <b></b>
-    styleWithCSS: false,
-
-    // <Array[string | Object]>, string if overwriting, object if customizing/creating
-    // action.name<string> (only required if overwriting)
-    // action.icon<string> (optional if overwriting, required if custom action)
-    // action.title<string> (optional)
-    // action.result<Function> (required)
-    // Specify the actions you specifically want (in order)
-    actions: [
-      'bold',
-      'italic',
-      'underline',
-      'heading1',
-      'heading2',
-      'heading3',
-      'heading4',
-      'paragraph',
-      'olist',
-      'ulist',
-      'todo'
-    ],
-
-    // classes<Array[string]> (optional)
-    // Choose your custom class names
-    classes: {
-      actionbar: 'pell-actionbar',
-      button: 'pell-button',
-      content: 'pell-content',
-      selected: 'pell-button-selected'
+      console.log('Converted ' + timestamp + ' to unique key:' + uniqueKey);
     }
-  })
 
-    </script>
+    function prettifyUniqueKey(uniqueKey) {
+      var prettyDate = uniqueKey.substring(0, 2) + " " + getMonthName(uniqueKey.substring(2, 4)) + " " + uniqueKey.substring(4);
+      console.log('Prettified ' + uniqueKey + ' to ' + prettyDate);
+      return prettyDate;
+    }
 
-    <script type="module">
-
-    // Get pageName = gyanl.com/string
-
-    var pageName = location.pathname.substring(location.pathname.lastIndexOf("/") + 1);
-    console.log(pageName);
+    function getMonthName(month) {
+      var monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+      return monthNames[parseInt(month) - 1];
+    }
 
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js";
@@ -112,15 +100,49 @@ layout: default
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCLkh1I6haUU51EslRGSlXkXiYqOkvcCKA",
-      authDomain: "idea-cbd6c.firebaseapp.com",
-      databaseURL: "https://idea-cbd6c-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "idea-cbd6c",
-      storageBucket: "idea-cbd6c.appspot.com",
-      messagingSenderId: "965624401030",
-      appId: "1:965624401030:web:accca7b65fddd344591507",
-      measurementId: "G-CVF81V77DF"
+      apiKey: "AIzaSyBcSljzd_rMlOWk9zvLaoNdnRVYp4EBwc0",
+      authDomain: "journal-with-voice.firebaseapp.com",
+      databaseURL: "https://journal-with-voice-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "journal-with-voice",
+      storageBucket: "journal-with-voice.appspot.com",
+      messagingSenderId: "184119101450",
+      appId: "1:184119101450:web:dec08fb998fb56148637f3",
+      measurementId: "G-01LQP6SLN8"
     };
+
+    var title = document.getElementById('title');
+    var url = new URL(window.location.href);
+    var path = url.pathname;
+    var pageKey = path.substring(1);
+
+    var today = new Date();
+    var todayKey = pageKey;
+
+    // initialise calendar
+
+    var weekdaytoday = today.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
+
+    // document.getElementById(weekdaytoday).classList = 'today';
+
+    var days = {
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6,
+      'sunday': 7
+    };
+
+    var dayNumber = days[weekdaytoday];
+
+    for (var i = 0; i < 7; i++) {
+      var day = new Date();
+      day.setDate(today.getDate() - (dayNumber - 1) + i);
+      var dayKey = generateUniqueKey(day);
+      var weekday = day.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
+      document.getElementById(weekday).innerHTML = "<a href='/" + dayKey + "'>" + day.getDate() + "</a>";
+    }
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -130,176 +152,180 @@ layout: default
     const auth = getAuth();
     const user = auth.currentUser;
 
-    const reference = ref(db, pageName + '/');
+    const reference = ref(db, '/');
 
-    var vtitle = document.getElementById('htmlTitle');
-    var vsubtitle = document.getElementById('htmlSubtitle');
-    var vbody = document.getElementsByClassName("pell-content")[0];
-    var vlogin = document.getElementById("logmein");
+    var numposts = 0;
 
-    var vdisplayname = "";
-    var vphotourl = "";
-    var vemail = "";
+    var timer = document.getElementById("timer");
 
-    var actionbar = document.getElementsByClassName("pell-actionbar")[0];
-    hideActionBar();
 
-    // One time run
-      onValue(reference, (snapshot) => {
+    function startTimer() {
+      timer.style.display = "inline-block";
+      timer.innerHTML = "🔴 0:00";
+      var time = 0;
+      var interval = setInterval(function () {
+        time++;
+        var minutes = Math.floor(time / 60);
+        var seconds = time % 60;
+        timer.innerHTML = "🔴 " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+      }, 1000);
 
-    // If snapshot exists, get the values and populate the page.
-        if (snapshot.exists()) {
-          console.log(snapshot.val());
-          vtitle.innerHTML = snapshot.val().title;
-          vsubtitle.innerHTML = snapshot.val().subtitle;
-          vbody.innerHTML = snapshot.val().body;
-        } else {
-        // If no snapshot, fill values and create record.
-          console.log("Creating new record.");
-          vtitle.innerHTML = pageName;
-          vbody.innerHTML = "Write something epic.<br><br><br><br><br><br><br>";
-          vbody.style.opacity = "0.5";
+      return interval; // Return the interval ID to be able to clear it later
+    }
 
-    // Create new log
-          set(ref(db, pageName + "/"), {
-            title: vtitle.innerHTML,
-            subtitle: vsubtitle.innerHTML,
-            body : vbody.innerHTML
-          });
+    function stopTimer(interval) {
+      clearInterval(interval); // Clear the interval using the ID
+      timer.style.display = "none";
+    }
+
+    // status fields and start button in UI
+    var phraseDiv;
+    var startRecognizeOnceAsyncButton;
+
+    // subscription key and region for speech services.
+    var subscriptionKey, serviceRegion;
+    var SpeechSDK;
+    var recognizer;
+
+    document.addEventListener("DOMContentLoaded", function () {
+      startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
+      subscriptionKey = "5ab226e547274f4a827f1336efb4f46a";
+      serviceRegion = "centralindia";
+      phraseDiv = document.getElementById("phraseDiv");
+
+      startRecognizeOnceAsyncButton.addEventListener("click", function () {
+        startRecognizeOnceAsyncButton.disabled = true;
+        startRecognizeOnceAsyncButton.style.display = "none";
+        var interval = startTimer();
+
+        if (subscriptionKey === "" || subscriptionKey === "subscription") {
+          alert("Please enter your Microsoft Cognitive Services Speech subscription key!");
+          return;
         }
+        var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey, serviceRegion);
 
-     // Stop showing loader and show content
-        document.getElementById("pageContent").classList.remove('displaynone');
+        speechConfig.speechRecognitionLanguage = "en-US";
+        var audioConfig = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+        recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
+        recognizer.recognizeOnceAsync(
+          function (result) {
+            startRecognizeOnceAsyncButton.disabled = false;
+            phraseDiv.innerHTML += result.text;
+            window.console.log(result);
+            stopTimer(interval);
+            startRecognizeOnceAsyncButton.style.display = "block";
 
+            // Save the recognized text to Firebase
+            saveDictationToFirebase(phraseDiv.innerHTML);
+
+            recognizer.close();
+            recognizer = undefined;
+          },
+          function (err) {
+            startRecognizeOnceAsyncButton.disabled = false;
+            phraseDiv.innerHTML += err;
+            window.console.log(err);
+            stopTimer(interval);
+            startRecognizeOnceAsyncButton.style.display = "block";
+
+            recognizer.close();
+            recognizer = undefined;
+          });
       });
 
-      // Dont't allow editing of post body
-      vbody.contentEditable = "false";
+      if (!!window.SpeechSDK) {
+        SpeechSDK = window.SpeechSDK;
+        startRecognizeOnceAsyncButton.disabled = false;
 
-        // check if logged in
-        hideActionBar();
-        getUserDetails();
-
-    function updateValues() {
-      const updates = {};
-      updates[pageName + "/"] = {
-        title: vtitle.innerHTML,
-        subtitle: vsubtitle.innerHTML,
-        body: vbody.innerHTML
-      };
-      update(ref(db), updates);
-      console.log("Update sent");
-      hideActionBar();
-    }
-
-    function showActionBar() {
-        actionbar.classList.remove("hidden");
-        vbody.style.opacity = "1.0";
-    }
-
-    function hideActionBar() {
-        actionbar.classList.add("hidden");
-    }
-
-    function signInUser() {
-      console.log("Trying to sign in...")
-      signInWithRedirect(auth, provider);
-    }
-
-    // function showUserOnPage() {
-    //   document.getElementById('containerOfUser').classList.remove('displaynone');
-    //   document.getElementById('photoOfUser').src = vphotourl;
-    //   document.getElementById('nameOfUser').innerHTML = vdisplayname;
-    //   vlogin.classList.add('displaynone');
-    // }
-
-    function showUserOnPage() {
-
-  // Show user chip
-  document.getElementById('containerOfUser').classList.remove('displaynone');
-  document.getElementById('photoOfUser').src = vphotourl;
-  document.getElementById('nameOfUser').innerHTML = vdisplayname;
-
-  // Hide login button
-  vlogin.classList.add('displaynone');
-
-  if (vemail == "gyanlakhwani@gmail.com"){
-    //User can edit, show edit access
-    document.getElementById('statusOfUser').innerHTML = "Edit Access";
-    console.log("Setting Edit Access");
-
-
-    // Make text areas editable
-    vtitle.addEventListener("click", function() {
-      vtitle.contentEditable = "true";
+        console.log("SpeechSDK is not available");
+      }
     });
 
-    vsubtitle.addEventListener("click", function() {
-      vsubtitle.contentEditable = "true";
-    });
 
-    vbody.contentEditable = "true";
+    /**
+     * Saves the dictation text to Firebase.
+     * @param {string} text - The dictation text to be saved.
+     */
+    function saveDictationToFirebase(text) {
 
-    // Add event listeners for update values
-    vtitle.addEventListener("blur", updateValues);
-    vsubtitle.addEventListener("blur", updateValues);
-    vbody.addEventListener("blur", updateValues);
+      // Generate a unique key for the new dictation entry
+      const timestamp = new Date();
+      const uniqueKey = generateUniqueKey(timestamp);
+      console.log('Unique key:', uniqueKey);
+      const newDictationRef = ref(db, '/' + uniqueKey);
 
-    // Show action bar
-    showActionBar();
-  }
-
-  else{
-    //User read only, show read only access
-    document.getElementById('statusOfUser').innerHTML = "Read Access";
-  }
-}
-
-    function getUserDetails() {
-      console.log("Trying to get user details...");
-
-      const auth = getAuth();
-
-getRedirectResult(auth)
-  .then((result) => {
-    // This gives you a Google Access Token. You can use it to access Google APIs.
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-
-    console.log(credential);
-    console.log(token);
-
-    // The signed-in user info.
-    const user = result.user;
-    console.log(user);
-    console.log("i think you are " + user.displayName);
-    vdisplayname = user.displayName;
-    vphotourl = user.photoURL;
-    vemail = user.email;
-    showUserOnPage();
-
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // The email of the user's account used.
-    const email = error.email;
-    // The AuthCredential type that was used.
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    // ...
-  });
-
+      // Append the text to the existing dictation data
+      update(newDictationRef, {
+        text: text,
+      })
+        .then(() => {
+          console.log('Dictation saved to Firebase');
+        })
+        .catch((error) => {
+          console.error('Error saving dictation to Firebase:', error);
+        });
     }
 
-    // Add event listeners
+    window.saveDictationToFirebaseWithKey = function (text, key) {
+      const newDictationRef = ref(db, '/' + key);
 
-    vtitle.addEventListener("blur", updateValues);
-    vsubtitle.addEventListener("blur", updateValues);
-    vbody.addEventListener("blur", updateValues);
-    vbody.addEventListener("focus", showActionBar);
-    vlogin.addEventListener("click", signInUser);
+      // Append the text to the existing dictation data
+      update(newDictationRef, {
+        text: text,
+      })
+        .then(() => {
+          console.log('Dictation saved to Firebase');
+        })
+        .catch((error) => {
+          console.error('Error saving dictation to Firebase:', error);
+        });
+    }
+
+
+    // Firebase stuff after this
+
+
+    // One time run
+    onValue(reference, (snapshot) => {
+
+      document.getElementById('htmlBody').innerHTML = "";
+
+      snapshot.forEach((postSnapshot) => {
+        const postKey = postSnapshot.key;
+        const postData = postSnapshot.val();
+
+        if (postKey == todayKey) {
+
+
+          var prettyDate = prettifyUniqueKey(postKey);
+
+          title.innerHTML = prettyDate;
+
+          var thisCode = `
+        <div 
+        contenteditable="true" 
+        onblur="saveDictationToFirebaseWithKey(this.innerHTML,'${postKey}')" 
+        onclick="this.contenteditable='true'" 
+        class='journal-content'>
+        ${postData.text}
+        </div>`;
+
+          document.getElementById('htmlBody').innerHTML += thisCode;
+        }
+      });
 
 
 
-    </script>
+      const collection = document.getElementsByClassName("dummy");
+      for (let i = 0; i < collection.length; i++) {
+        collection[i].style.animationDelay = (i * 40) + 'ms';
+      }
+
+    });
+  </script>
+
+
+</body>
+
+</html>

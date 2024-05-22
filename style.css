@@ -32,13 +32,13 @@
 }
 
 html{
-    margin: 0 20px;
     background-color: var(--background-color);
 }
 
 table{
     text-align: center;
     width: 100%;
+    border-collapse: collapse;
 }
 
 td{
@@ -73,6 +73,17 @@ a:link {
 
 .today a {
     color: var(--background-color);
+}
+
+.journal-date{
+    padding: 0 20px;
+    margin: 20px 0 4px 0;
+}
+
+.journal-content{
+    padding: 6px 10px;
+    margin: 0 10px;
+    border-radius: 6px;
 }
 
 body {
