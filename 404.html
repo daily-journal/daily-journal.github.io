@@ -295,7 +295,11 @@
       snapshot.forEach((postSnapshot) => {
         console.log('Post snapshot:', postSnapshot);
         const postKey = postSnapshot.key;
+        console.log('Post key in snapshot:', postKey);
         const postData = postSnapshot.val();
+        console.log('Post data in snapshot:', postData);
+        console.log('Postdata.text in snapshot:', postData.text);
+        console.log('Postdata.value in snapshot:', postData.text);
 
 
           var prettyDate = prettifyUniqueKey(postKey);
