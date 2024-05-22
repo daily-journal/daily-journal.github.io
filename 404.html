@@ -49,8 +49,8 @@
 
     </header>
 
-    <div id="htmlBody" class="post-content e-content" itemprop="articleBody">
-
+    <div id="htmlBody">
+      Tap here to type or record a note.
     </div>
 
   </article>
@@ -114,15 +114,16 @@
     var url = new URL(window.location.href);
     var path = url.pathname;
     var pageKey = path.substring(1);
+    console.log('Page key:', pageKey);
 
     var today = new Date();
-    var todayKey = pageKey;
+    var todayKey = generateUniqueKey(today);
 
     // initialise calendar
 
     var weekdaytoday = today.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
 
-    // document.getElementById(weekdaytoday).classList = 'today';
+    document.getElementById(weekdaytoday).classList = 'today';
 
     var days = {
       'monday': 1,
@@ -152,7 +153,7 @@
     const auth = getAuth();
     const user = auth.currentUser;
 
-    const reference = ref(db, '/');
+    const reference = ref(db, '/' + todayKey);
 
     var numposts = 0;
 
@@ -292,6 +293,7 @@
       document.getElementById('htmlBody').innerHTML = "";
 
       snapshot.forEach((postSnapshot) => {
+        console.log('Post snapshot:', postSnapshot);
         const postKey = postSnapshot.key;
         const postData = postSnapshot.val();
 
