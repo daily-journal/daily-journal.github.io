@@ -115,14 +115,14 @@
     var pageKey = path.substring(1);
     console.log('Page key:', pageKey);
 
-    var today = new Date();
-    var todayKey = generateUniqueKey(today);
+    // var today = new Date();
+    // var todayKey = generateUniqueKey(today);
 
     // initialise calendar
 
     var weekdaytoday = today.toLocaleString('en-us', { weekday: 'long' }).toLowerCase();
 
-    document.getElementById(weekdaytoday).classList = 'today';
+    // document.getElementById(weekdaytoday).classList = 'today';
 
     var days = {
       'monday': 1,
@@ -152,7 +152,7 @@
     const auth = getAuth();
     const user = auth.currentUser;
 
-    const reference = ref(db, '/' + todayKey);
+    const reference = ref(db, '/' + pageKey);
 
     var numposts = 0;
 
