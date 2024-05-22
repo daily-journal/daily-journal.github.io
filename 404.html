@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <article id="pageContent" class="post h-entry animated fadeInUp" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="pageContent">
 
     <header class="post-header">
 
@@ -297,8 +297,6 @@
         const postKey = postSnapshot.key;
         const postData = postSnapshot.val();
 
-        if (postKey == todayKey) {
-
 
           var prettyDate = prettifyUniqueKey(postKey);
 
@@ -314,7 +312,6 @@
         </div>`;
 
           document.getElementById('htmlBody').innerHTML += thisCode;
-        }
       });
 
 

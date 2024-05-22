@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <article id="pageContent" class="post h-entry animated fadeInUp" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="pageContent">
 
     <header class="post-header">
 
@@ -207,7 +207,7 @@
         recognizer.recognizeOnceAsync(
           function (result) {
             startRecognizeOnceAsyncButton.disabled = false;
-            phraseDiv.innerHTML += result.text;
+            phraseDiv.innerHTML += result.text + ' ';
             window.console.log(result);
             stopTimer(interval);
             startRecognizeOnceAsyncButton.style.display = "block";
