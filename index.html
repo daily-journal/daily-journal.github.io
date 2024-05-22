@@ -1,251 +1,106 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-    <title>Sticky Notes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <title>Microsoft Cognitive Services Speech SDK JavaScript Quickstart</title>
+  <meta charset="utf-8" />
 </head>
+<body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;">
+  <!-- <uidiv> -->
+  <div id="warning">
+    <h1 style="font-weight:500;">Speech Recognition Speech SDK not found (microsoft.cognitiveservices.speech.sdk.bundle.js missing).</h1>
+  </div>
+  
+  <div id="content" style="display:none">
+    <table width="100%">
+      <tr>
+        <td></td>
+        <td><h1 style="font-weight:500;">Microsoft Cognitive Services Speech SDK JavaScript Quickstart</h1></td>
+      </tr>
+      <tr>
+        <td align="right"><a href="https://docs.microsoft.com/azure/cognitive-services/speech-service/get-started" target="_blank">Subscription</a>:</td>
+        <td><input id="subscriptionKey" type="text" size="40" value=""b97c93178a0548b59d99e8f0977499b8""></td>
+      </tr>
+      <tr>
+        <td align="right">Region</td>
+        <td><input id="serviceRegion" type="text" size="40" value="centralindia"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><button id="startRecognizeOnceAsyncButton">Start recognition</button></td>
+      </tr>
+      <tr>
+        <td align="right" valign="top">Results</td>
+        <td><textarea id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea></td>
+      </tr>
+    </table>
+  </div>
+  <!-- </uidiv> -->
 
-<body id="page">
+  <!-- <speechsdkref> -->
+  <!-- Speech SDK reference sdk. -->
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+  <!-- </speechsdkref> -->
 
-    <div class="comment-section">
-        <h1 class="spaced">Sticky Notes</h1>
-        <div id="comments-container">
+  <!-- <quickstartcode> -->
+  <!-- Speech SDK USAGE -->
+  <script>
+    // status fields and start button in UI
+    var phraseDiv;
+    var startRecognizeOnceAsyncButton;
 
-        </div>
+    // subscription key and region for speech services.
+    var subscriptionKey, serviceRegion;
+    var SpeechSDK;
+    var recognizer;
 
-    </div>
+    document.addEventListener("DOMContentLoaded", function () {
+      startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
+      subscriptionKey = "b97c93178a0548b59d99e8f0977499b8";
+      serviceRegion = "centralindia";
+      phraseDiv = document.getElementById("phraseDiv");
 
-        <div class="create-sheet" id="create-sheet">
-            <div id="handle" class="handle"></div>
-            <textarea placeholder="Take a note..." id="phraseDiv" class="comment-box" rows=1></textarea><br>
-            <button class="mic-button" id="startRecognizeOnceAsyncButton"><i class="inline" data-feather="mic"></i></button>
+      startRecognizeOnceAsyncButton.addEventListener("click", function () {
+        startRecognizeOnceAsyncButton.disabled = true;
+        phraseDiv.innerHTML = "";
 
-
-            <!-- <button onclick="submitComment()" class="mic-button"><i data-feather="send"></i></button> -->
-        </div>
-
-
-            <input style="display:none;" id="subscriptionKey" type="text" size="40" value="52f270b7985349eca596ad11f597076b">
-            <input style="display:none;" id="serviceRegion" type="text" size="40" value="centralindia">
-    
-      <!-- </uidiv> -->
-    
-      <!-- <speechsdkref> -->
-      <!-- Speech SDK reference sdk. -->
-      <script src="microsoft.cognitiveservices.speech.sdk.bundle.js"></script>
-      <!-- </speechsdkref> -->
-    
-      <!-- <authorizationfunction> -->
-      <!-- Speech SDK Authorization token -->
-      <script>
-      // Note: Replace the URL with a valid endpoint to retrieve
-      //       authorization tokens for your subscription.
-      var authorizationEndpoint = "token.php";
-    
-      function RequestAuthorizationToken() {
-        if (authorizationEndpoint) {
-          var a = new XMLHttpRequest();
-          a.open("GET", authorizationEndpoint);
-          a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-          a.send("");
-          a.onload = function() {
-              var token = JSON.parse(atob(this.responseText.split(".")[1]));
-              serviceRegion.value = token.region;
-              authorizationToken = this.responseText;
-              subscriptionKey.disabled = true;
-              subscriptionKey.value = "using authorization token (hit F5 to refresh)";
-              console.log("Got an authorization token: " + token);
-          }
+        if (subscriptionKey.value === "" || subscriptionKey.value === "subscription") {
+          alert("Please enter your Microsoft Cognitive Services Speech subscription key!");
+          return;
         }
-      }
-      </script>
-      <!-- </authorizationfunction> -->
-    
-      <!-- <quickstartcode> -->
-      <!-- Speech SDK USAGE -->
-      <script>
-        // status fields and start button in UI
-        var phraseDiv;
-        var startRecognizeOnceAsyncButton;
-    
-        // subscription key and region for speech services.
-        var subscriptionKey, serviceRegion;
-        var authorizationToken;
-        var SpeechSDK;
-        var recognizer;
+        var speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey.value, serviceRegion.value);
 
-        document.addEventListener("DOMContentLoaded", function () {
-          startRecognizeOnceAsyncButton = document.getElementById("startRecognizeOnceAsyncButton");
-          subscriptionKey = document.getElementById("subscriptionKey");
-          serviceRegion = document.getElementById("serviceRegion");
-          phraseDiv = document.getElementById("phraseDiv");
-    
-          startRecognizeOnceAsyncButton.addEventListener("click", function () {
+        speechConfig.speechRecognitionLanguage = "en-US";
+        var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+        recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
 
-            // Gyan's logic to show or hide HVC
-            console.log("Showed HVC");
-            document.getElementById("create-sheet").classList.toggle("create-sheet-active");
-            document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
-            document.getElementById("phraseDiv").classList.toggle("comment-box-active");
-            
-
-            startRecognizeOnceAsyncButton.disabled = true;
-            // phraseDiv.innerHTML = "";
-    
-            // if we got an authorization token, use the token. Otherwise use the provided subscription key
-            var speechConfig;
-            if (authorizationToken) {
-              speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(authorizationToken, serviceRegion.value);
-            } else {
-              if (subscriptionKey.value === "" || subscriptionKey.value === "subscription") {
-                alert("Please enter your Microsoft Cognitive Services Speech subscription key!");
-                return;
-              }
-              speechConfig = SpeechSDK.SpeechConfig.fromSubscription(subscriptionKey.value, serviceRegion.value);
-            }
-    
-            speechConfig.speechRecognitionLanguage = "en-US";
-            var audioConfig  = SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
-            recognizer = new SpeechSDK.SpeechRecognizer(speechConfig, audioConfig);
-    
-            recognizer.recognizeOnceAsync(
-              function (result) {
-                startRecognizeOnceAsyncButton.disabled = false;
-                phraseDiv.value = result.text;
-                
-                // Gyan's logic to show or hide HVC
-                console.log("Hidden HVC");
-                submitComment();
-                document.getElementById("create-sheet").classList.toggle("create-sheet-active");
-                document.getElementById("startRecognizeOnceAsyncButton").classList.toggle("mic-button-active");
-                document.getElementById("phraseDiv").classList.toggle("comment-box-active");
-                // document.getElementById("phraseDiv").value = "";
-
-                window.console.log(result);
-    
-                recognizer.close();
-                recognizer = undefined;
-              },
-              function (err) {
-                startRecognizeOnceAsyncButton.disabled = false;
-                phraseDiv.innerHTML += err;
-                window.console.log(err);
-    
-                recognizer.close();
-                recognizer = undefined;
-              });
-          });
-    
-          if (!!window.SpeechSDK) {
-            SpeechSDK = window.SpeechSDK;
+        recognizer.recognizeOnceAsync(
+          function (result) {
             startRecognizeOnceAsyncButton.disabled = false;
-    
-            // in case we have a function for getting an authorization token, call it.
-            if (typeof RequestAuthorizationToken === "function") {
-                RequestAuthorizationToken();
-            }
-          }
-        });
-      </script>
+            phraseDiv.innerHTML += result.text;
+            window.console.log(result);
 
+            recognizer.close();
+            recognizer = undefined;
+          },
+          function (err) {
+            startRecognizeOnceAsyncButton.disabled = false;
+            phraseDiv.innerHTML += err;
+            window.console.log(err);
 
+            recognizer.close();
+            recognizer = undefined;
+          });
+      });
 
+      if (!!window.SpeechSDK) {
+        SpeechSDK = window.SpeechSDK;
+        startRecognizeOnceAsyncButton.disabled = false;
 
-
-
-
-
-
-
-
-
-
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.2.3/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-       https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-database.js"></script>
-
-    <script>
-        
-        // Render icons
-        feather.replace();
-
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-          apiKey: "AIzaSyB4XlYczGiKo6IUIzYaaEuu5hC3AwNldF0",
-          authDomain: "questions-cf679.firebaseapp.com",
-          databaseURL: "https://questions-cf679-default-rtdb.firebaseio.com",
-          projectId: "questions-cf679",
-          storageBucket: "questions-cf679.appspot.com",
-          messagingSenderId: "1020439570786",
-          appId: "1:1020439570786:web:ae54968417f81239aea43b"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        // firebase.analytics();
-
-        function openNote(noteKey){
-            window.location.href = '/note/note.html?' + noteKey;
-        }
-
-        var database = firebase.database();
-        
-        var numComments = 0;
-
-        const stky = firebase.database().ref('stickies');
-        stky.on('value', (snapshot) => {
-
-            function fillComments() {
-
-                // Clear stickies
-                document.getElementById("comments-container").innerHTML = "";
-
-                // Add all stickies
-                snapshot.forEach((childSnapshot) => {
-                var stickyKey = childSnapshot.key;
-                var stickyData = childSnapshot.val();
-                document.getElementById("comments-container").innerHTML += "<div id=" + stickyKey + " class='sticky-note note-animation' onclick=openNote(this.id)>" + stickyData.comment + "<div class='comment-metadata'>" + stickyData.timestamp + "</div></div>";
-                console.log("Just made a sticky: " + childSnapshot.val() );
-                });
-                    
-            
-            }
-            fillComments();
-        });
-
-        function submitComment() {
-
-            var today = new Date();
-            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            var dateTime = date + ' ' + time;
-            var stickypush = document.getElementById("phraseDiv").value;
-
-            var newSticky = stky.push();
-
-            newSticky.set({
-                comment: stickypush,
-                timestamp: dateTime
-
-            }, function(error) {
-                if (error) {
-                    console.log("Comment failed...");
-                } else {
-                    console.log("Commented: " + stickypush);
-                    document.getElementById("phraseDiv").value = "";
-                }
-            });
-        }
-
-    </script>
-
-
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('warning').style.display = 'none';
+      }
+    });
+  </script>
+  <!-- </quickstartcode> -->
 </body>
-
 </html>
